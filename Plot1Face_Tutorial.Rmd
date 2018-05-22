@@ -1,0 +1,63 @@
+---
+title: "Plot1Face Tutorial"
+author: "Julie D. White"
+date: "May 14, 2018"
+output: html_document
+always_allow_html: yes
+---
+
+This tutorial is set to accompany the paper by Zaidi & White, et al. "Facial masculinity does not appear to be a condition-dependent male ornament in humans and does not reflect MHC heterozygosity" to provide the user with a way of visualizing dense heatmaps on facial scans.  
+
+We are indebted to Tomas Gonzalez-Zarzar for writing the Plot1Face function. Follow him at: https://github.com/tomszar  
+
+Read in provided obj file. This file contains 7,150 landmark vertices and accompanying triangle facet information.
+```{r}
+RefScan <- read.table("RefScan.obj", sep = "\t", header = F)
+head(RefScan)
+```
+
+Split the information into vertices and facets matrices. 
+```{r}
+RefScan_Vertices <- as.matrix(RefScan[which(RefScan$V1 == "v"), 2:4])
+RefScan_Facets <- as.matrix(RefScan[which(RefScan$V1 == "f"), 2:4])
+head(RefScan_Vertices)
+head(RefScan_Facets)
+```
+
+Initialize Plot1Face function from source file
+```{r}
+library(plotly)
+library(mixOmics)
+source('Plot1Face.R')
+```
+
+Example of plotting a face in greyscale, with no heatmap information.
+```{r}
+Plot1Face(vertices = RefScan_Vertices, facets = RefScan_Facets, colormap = NULL, title = "Example greyscale face")
+```
+
+Examples using results from Zaidi and White, et al. paper.  
+
+Geometric sexual dimorphism for each vertex and Cohen's D estimate for each vertex.
+```{r}
+#Geometric sexual dimorphism
+ql_gsd <- read.table("ql_gsd_03292018.txt", sep = "\t", header = T)
+head(ql_gsd)
+```
+
+```{r}
+#Cohen's D
+ql_sex_cohenD <- read.table("ql_sex_cohenD_03292018.txt", sep = "\t", header = T)
+head(ql_sex_cohenD)
+```
+
+Add colors to the face representing the sexual dimorphism at each vertex.
+```{r}
+Plot1Face(vertices = RefScan_Vertices, facets = RefScan_Facets, colormap = ql_gsd$x, title = "Geometric sexual dimorphism")
+```
+
+Add colors to the face representing the Cohen's D estimate for sex difference at each vertex.
+```{r}
+Plot1Face(vertices = RefScan_Vertices, facets = RefScan_Facets, colormap = ql_sex_cohenD$x, title = "Cohen's D estimate for sexual dimorphism")
+```
+
