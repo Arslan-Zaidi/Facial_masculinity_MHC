@@ -51,7 +51,7 @@ Details of folders:
   2. _ql_sex_cohenD_03292018.txt_\
   ... dataframe of length 7,150 x 1. Each row is the Cohen's D of sexual dimorphism for each quasi-landmark
   
-  ### Masc_v_height
+  #### Masc_v_height
   Linear model results: facial masculinity ~ height + covariates
   
   1. _lm_overallmasc_height_results_03292018_\
