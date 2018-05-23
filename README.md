@@ -36,7 +36,7 @@ Details of folders:
      In other words, this is average facial masculinity divided by the average facial masculinity of the male consensus face.
      
   3. _qlmasc_1233_noprop_03292018.txt.zip_\
-  Zipped text file containing high-dimensional facial masculinity scores (dimensions: 7,150 x 1,233) i.e. 3D facial masculinity calculated for 7,150 quasi-landmarks (rows) for each of 1,233 individuals (columns). Referred to in the paper as FM<sub>QL</sub>. No headers or indices included. The order of the individuals is the same as the order of individuals in Euro_demographic_03292018.dat file.
+  Zipped text file containing high-dimensional facial masculinity scores (dimensions: 7,150 x 1,233) i.e. 3D facial masculinity calculated for 7,150 quasi-landmarks (rows) for each of 1,233 individuals (columns). Referred to in the paper as FM<sub>QL</sub>. No headers or indices included. The order of the individuals is the same as the order of individuals in Euro_demographic_03292018.dat file. The overall facial masculinity scores were calculated by averaging FM<sub>QL</sub> across the 7,150 QLs. The FM<sub>QL</sub> scores can be used in further analyses or visualized using the Plot1Face.R function. Take a look at the tutorial for more details.
   
   4. _Refscan.obj_\
   .OBJ file containing the 3D facial template used to visualize facial heatmaps etc.
@@ -75,6 +75,10 @@ Details of folders:
   ... z: Z-score for difference in slope
   ... p.value: Two-sided p-value for Z-score
   ... q.value: indicator variable indicating if p-value passes Bonferroni correction
+  
+## Tutorial_visualizing_facial_heatmaps
+
+  The Rmarkdown file (.rmd) demonstrates how the FM_ql data, as well as other ql-specific statistics can be viewed on a face. A rendered .html file is provided, which should be downloaded onto your computer first and then opened in a browser. The used of plotly allows the 3D faces to be rotated and scaled. 
   
 
 
