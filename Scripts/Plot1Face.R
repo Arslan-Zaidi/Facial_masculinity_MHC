@@ -1,7 +1,7 @@
 #Author: Tomas B. Gonzalez-Zarzar
 #Date: 5/8/18
 
-Plot1Face <- function(vertices, facets, colormap=NULL, title=NULL)
+Plot1Face <- function(vertices, facets, colormap=NULL, title=NULL,color.min=NULL,color.max=NULL)
 {
   # Plot one face, with the corresponding facets and colormap if given.
   # vertices is a matrix with rows = n landmarks and 3 columns (x, y, z) (v in an obj file)
@@ -43,13 +43,14 @@ Plot1Face <- function(vertices, facets, colormap=NULL, title=NULL)
       i = facets[, 1]-1, j = facets[, 2]-1, k = facets[, 3]-1,
       facecolor = facecolor1, opacity = 1,
       hoverinfo = "none",
-      lighting = list(specular=0.05, ambient=0.3, diffuse=0.8, fresnel=0.1, roughness=0.1),  
+      lighting = list(specular=0.0, ambient=0.3, diffuse=0.8, fresnel=0.1, roughness=0.1),  
       lightposition = list(x = 100, y = 200, z = 0), 
       type = "mesh3d"
     ) %>% 
       layout(scene = scene, title = title)
   } else {
-    
+    if(is.null(color.min)){color.min = min(colormap)}else{color.min = color.min} 
+    if(is.null(color.max)){color.max = max(colormap)}else{color.max = color.max}
     myPlot <- plot_ly(
       x = vertices[,1], y = vertices[,2], z = vertices[,3],
       i = facets[, 1]-1, j = facets[, 2]-1, k = facets[, 3]-1,
@@ -57,8 +58,10 @@ Plot1Face <- function(vertices, facets, colormap=NULL, title=NULL)
       intensity = colormap, 
       opacity = 1,
       hoverinfo = "none",
-      lighting = list(specular=0.05, ambient=0.3, diffuse=0.8, fresnel=0.1, roughness=0.1),  
-      lightposition = list(x = 100, y = 200, z = 0), 
+      lighting = list(specular=0.0, ambient=0.3, diffuse=0.8, fresnel=0.1, roughness=0.1),  
+      lightposition = list(x = 100, y = 200, z = 0),
+      cmin=color.min,
+      cmax=color.max,
       type = "mesh3d"
     ) %>% 
       layout(scene = scene, title = title)
