@@ -11,7 +11,7 @@ This tutorial is set to accompany the paper by Zaidi & White, et al. "Facial mas
 The Plot1Face.R function in written by Tomas Gonzalez-Zarzar. Follow him at: https://github.com/tomszar  
 
 Load necessary libraries
-``` {r}
+```{r}
 require(plotly)
 require(mixOmics)
 require(data.table)
@@ -19,7 +19,7 @@ require(data.table)
 
 Read in provided obj file. The contains information for the template face on top of which heatmaps can be visualized. The file contains 7,150 landmark vertices and accompanying triangle facet information.
 ```{r}
-RefScan <- read.table("RefScan.obj", sep = "\t", header = F)
+RefScan <- read.table("../Dataset/RefScan.obj", sep = "\t", header = F)
 head(RefScan)
 ```
 
@@ -63,7 +63,7 @@ Plot geometric sexual dimorphism for each vertex and Cohen's D estimate for each
 (or any other statistic e.g. effect size of predictor/p-value etc.)
 ```{r}
 #Geometric sexual dimorphism
-ql_gsd <- read.table("ql_gsd_03292018.txt", sep = "\t", header = T)
+ql_gsd <- read.table("../Results/Summary_dat/ql_gsd_03292018.txt", sep = "\t", header = T)
 head(ql_gsd)
 ```
 
