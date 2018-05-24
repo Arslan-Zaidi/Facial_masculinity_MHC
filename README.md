@@ -2,7 +2,10 @@
 Data and scripts for "Facial masculinity does not appear to be a condition-dependent male ornament and does not reflect MHC heterozygosity in humans"
 
 If you use any of the data or scripts for your own research, please cite the biorxiv paper:\
-Zaidi AA, White JD, Mattern BC, Liebowitz CR, Puts DA, Claes P, Shriver MD. 2018. Facial masculinity does not appear to be a condition-dependent male ornament in humans and does not reflect MHC heterozygosity. bioRxiv [Internet]:322255. Available from: https://www.biorxiv.org/content/early/2018/05/17/322255
+
+Zaidi AA, White JD, Mattern BC, Liebowitz CR, Puts DA, Claes P, Shriver MD. 2018. Facial masculinity does not appear to be a condition-dependent male ornament in humans and does not reflect MHC heterozygosity. bioRxiv. 
+doi: https://doi.org/10.1101/322255.\ 
+Available from: https://www.biorxiv.org/content/early/2018/05/17/322255
 
 
 Details of folders:
