@@ -81,7 +81,9 @@ Details of folders:
   
 ## Tutorial_visualizing_facial_heatmaps
 
-  The Rmarkdown file (.rmd) demonstrates how the FM_ql data, as well as other ql-specific statistics can be viewed on a face. A rendered .html file is provided, which should be downloaded onto your computer first and then opened in a browser. The used of plotly allows the 3D faces to be rotated and scaled. 
+  The Rmarkdown file (.rmd) demonstrates how the FM_ql data, as well as other ql-specific statistics can be viewed on a face. A rendered .html file is provided, which should be downloaded onto your computer first and then opened in a browser. The used of plotly allows the 3D faces to be rotated and scaled.
+  
+  The screenshots are provided to illustrate what the tutorial looks like. 
   
 
 
