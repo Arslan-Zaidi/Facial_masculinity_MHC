@@ -2,7 +2,9 @@
 title: "Plot1Face Tutorial"
 author: "Julie D. White"
 date: "May 14, 2018"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 always_allow_html: yes
 ---
 
