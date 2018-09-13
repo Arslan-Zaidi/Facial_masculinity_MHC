@@ -4,10 +4,9 @@
 library(data.table)
 library(plyr)
 library(ggplot2)
-library(gridExtra)
 library(GGally)
 
-#read in symspace - size corrected
+#read in symspace - size corrected - not available on github
 symql<-as.matrix(fread('~/Box Sync/MHC_paper/Archived/Data_from_git/Symshape_wo_Size/SymShape_wosize_02102018.txt',header=F))
 symid<-read.table('~/Box Sync/MHC_paper/Archived/Data_from_git/Symshape_wo_Size/SymShape_IDs_wosize_02102018.txt',header=F)
 
@@ -137,13 +136,18 @@ avg.masc3<-apply(qlmasc.mat3,1,mean)
 
 euroid$avg.masc3<-avg.masc3
 
-colnames(euroid)[c(12:14)]<-c("Method 1","Method 2","Method 3")
+####### METHOD 4: apply height correction to average masculinity from Method 1 ########
+
+avg.masc4<-resid(lm(data=euroid,avg.masc1~Height))
+euroid$avg.masc4<-avg.masc4
+
+colnames(euroid)[c(12:15)]<-c("Method 1","Method 2","Method 3","Method 4")
+
+
 
 #### PLOT ALL COMPARISONS #####
 
-library(GGally)
-
-pm<-ggpairs(euroid,columns=c("Method 1","Method 2","Method 3"),aes(color=Sex),
+pm<-ggpairs(euroid,columns=c("Method 1","Method 2","Method 3","Method 4"),aes(color=Sex),
             upper=list(continuous=wrap("smooth",alpha=0.5)),
             lower=list(continuous=wrap("cor",size=4,alignPercent=0.8)),
             diag=list(continuous=wrap("densityDiag",alpha=0.5)))+
