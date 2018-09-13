@@ -148,8 +148,8 @@ colnames(euroid)[c(12:15)]<-c("Method 1","Method 2","Method 3","Method 4")
 #### PLOT ALL COMPARISONS #####
 
 pm<-ggpairs(euroid,columns=c("Method 1","Method 2","Method 3","Method 4"),aes(color=Sex),
-            upper=list(continuous=wrap("smooth",alpha=0.5)),
-            lower=list(continuous=wrap("cor",size=4,alignPercent=0.8)),
+            lower=list(continuous=wrap("smooth",alpha=0.5)),
+            upper=list(continuous=wrap("cor",size=4,alignPercent=0.8)),
             diag=list(continuous=wrap("densityDiag",alpha=0.5)))+
   theme_bw()+theme(axis.text.x = element_text(angle=90))
 
@@ -160,5 +160,5 @@ for(j in 1:pm$ncol){
   }
 }
 
-ggsave("../Results/Summary_dat/masc_calc_method_comparison_09122018.pdf",pm,height=5,width=5)
+ggsave("../Results/Summary_dat/masc_calc_method_comparison_09122018.pdf",pm,height=5,width=7)
 
