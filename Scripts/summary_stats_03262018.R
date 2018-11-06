@@ -5,11 +5,12 @@ library(data.table)
 library(plyr)
 library(car)
 
-#read masculinity calculated per QL - unscaled
-qlmasc.u<-as.matrix(fread('../Dataset/qlmasc_1233_noprop_03292018.txt',header=F,sep="\t"))
+#read masculinity calculated per QL - unscaled - no size adjustment
+qlmasc.u1<-as.matrix(fread('../Dataset/qlmasc_1233_sizenotcorrected_09302018.txt',header=F,sep="\t"))
+qlmasc.u2<-as.matrix(fread('../Dataset/qlmasc_1233_sizecorrected_09302018.txt',header=F,sep="\t"))
 
 #read file containing data for sex, height, weight, etc. 
-eurofam.het<-read.table('../Dataset/euro_1233_masc_het_03292018.dat',header=T,sep="\t",stringsAsFactors = F)
+eurofam.het<-read.table('../Dataset/euro_1233_masc_het_09302018.dat',header=T,sep="\t",stringsAsFactors = F)
 
 #separate ql masculinity table by sex for use later
 qlmasc.m<-qlmasc.u[eurofam.het$Sex=="Male",]
@@ -18,7 +19,7 @@ qlmasc.f<-qlmasc.u[eurofam.het$Sex=="Female",]
 
 #calculating mean and standard deviation of overall facial masculinity for males and females
 
-ddply(eurofam.het,.(Sex),summarize,mean=mean(avg.masc),sd=sd(avg.masc))
+ddply(eurofam.het,.(Sex),summarize,mean=mean(avg.masc1),sd=sd(avg.masc1))
 
 ddply(eurofam.het,.(Sex),summarize,mean=mean(Height),sd=sd(Height))
 
@@ -27,7 +28,13 @@ ddply(eurofam.het,.(Sex),summarize,mean=mean(Height),sd=sd(Height))
 leveneTest(Height~as.factor(Sex),data=eurofam.het)
 
 #check for equality of variance between males and females in facial masculinity
-leveneTest(avg.masc~as.factor(Sex),data=eurofam.het)
+#size not adjusted
+leveneTest(avg.masc1~as.factor(Sex),data=eurofam.het)
+
+#check for equality of variance between males and females in facial masculinity
+#size adjusted
+leveneTest(avg.masc2~as.factor(Sex),data=eurofam.het)
+
 
 #calculate cohen's D for height and overall facial masculinity
 male.index<-which(eurofam.het$Sex=="Male")
@@ -56,10 +63,17 @@ cohen.d<-function(x){
 cohen.d(eurofam.het$Height)
 
 #cohenD - sex difference for masculinity
-cohen.d(eurofam.het$avg.masc)
+#size not adjusted
+cohen.d(eurofam.het$avg.masc1)
+#size adjusted
+cohen.d(eurofam.het$avg.masc2)
+
+
 
 #calculate cohen's D per QL
-ql.cohen<-apply(qlmasc.u,2,cohen.d)
+ql.cohen1<-apply(qlmasc.u1,2,cohen.d)
+ql.cohen2<-apply(qlmasc.u2,2,cohen.d)
 
-write.table(ql.cohen,'../Results/Summary_dat/ql_sex_cohenD_03292018.txt',col.names=T,row.names=F,quote=F,sep="\t")
+write.table(ql.cohen1,'../Results/Summary_dat/ql_sex_cohenD_sizenotcorrected_09302018.txt',col.names=T,row.names=F,quote=F,sep="\t")
+write.table(ql.cohen2,'../Results/Summary_dat/ql_sex_cohenD_sizecorrected_09302018.txt',col.names=T,row.names=F,quote=F,sep="\t")
 

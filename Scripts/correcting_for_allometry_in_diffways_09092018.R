@@ -1,10 +1,12 @@
 #Author: AAZaidi
-#This scripts calculates facial masculinity from 3D Procrustes coordinates
+#This scripts calculates facial masculinity from 3D Procrustes coordinates using different ways of allometric correction
+#it also compares them with each other
 #Can be modified to work with 2D coordinates as well
 library(data.table)
 library(plyr)
 library(ggplot2)
 library(GGally)
+library(car)
 
 #read in symspace - size corrected - not available on github
 symql<-as.matrix(fread('~/Box Sync/MHC_paper/Archived/Data_from_git/Symshape_wo_Size/SymShape_wosize_02102018.txt',header=F))
@@ -30,6 +32,8 @@ euro.m.index<-which(euroid$Sex=="Male")
 euro.f.index<-which(euroid$Sex=="Female")
 
 ##### 1ST METHOD: CALCULATE CONSENSUS FACES/MASCULINITY WITHOUT CORRECTING FOR HEIGHT #######
+# This is the method used in the paper to originally calculate FM_ql
+# this method yields FM_ql composed of both allometric and non-allometric components
 
 #create male consensus face
 cons.males1<-matrix(apply(teuroql[euro.m.index,],2,mean),7150,3,byrow=T)
@@ -78,10 +82,13 @@ euroid$avg.masc1<-avg.masc1
 
 
 ################### 2ND METHOD: RESIDUALIZE QL COORDINATES ON HEIGHT BEFORE CONSTRUCTING CONSENSUS FACES ####################
+# This method first residualizes procrustes shape coordinates (x,y, and z) on Height for all faces
+# then constructs male and female faces and calculates FM_ql
+# this way allometric variation is removed in the first step
 
-#now residualize teuroql on height and repeat
-#function to do so per QL - then we can iterate over QLs
+#function to residualize for a single coordinate - then we can iterate over all coordinates
 residualize.height<-function(x){
+  #x is the matrix containing individuals as rows and coordinates as columns
   l1<-lm(data=euroid,x~Height)
   r1<-resid(l1)
   return(as.matrix(r1))
@@ -126,9 +133,10 @@ euroid$avg.masc2<-avg.masc2
 
 
 ###### 3RD METHOD: RESIDUALIZE MASCULINITY CALCULATED PER QL ON HEIGHT ##########
+# in this method, we first calculate FM_ql using uncorrected coordinates, average across QLs to get the overall FM and then residualize on height
+# this way, allometry is removed after FM_ql is calculated BUT before FM_overall is calculated
 
-
-#a third way is to residualize on height after masculinity is calculated per QL 
+# residualize FM_ql on height
 qlmasc.mat3<-apply(qlmasc.mat1,2,residualize.height)
 
 #average masculinity over QL for each person and add to dataframe 
@@ -137,17 +145,19 @@ avg.masc3<-apply(qlmasc.mat3,1,mean)
 euroid$avg.masc3<-avg.masc3
 
 ####### METHOD 4: apply height correction to average masculinity from Method 1 ########
-
+# In this method, FM_overall is first calculated without allometric correction as in Method 1
+# then FM_overall is residualized on height
 avg.masc4<-resid(lm(data=euroid,avg.masc1~Height))
 euroid$avg.masc4<-avg.masc4
 
-colnames(euroid)[c(12:15)]<-c("Method 1","Method 2","Method 3","Method 4")
+
+colnames(euroid)[c(12:15)]<-c("Method_1","Method_2","Method_3","Method_4")
 
 
 
 #### PLOT ALL COMPARISONS #####
 
-pm<-ggpairs(euroid,columns=c("Method 1","Method 2","Method 3","Method 4"),aes(color=Sex),
+pm<-ggpairs(euroid,columns=c("Method_1","Method_2","Method_3","Method_4"),aes(color=Sex),
             lower=list(continuous=wrap("smooth",alpha=0.5)),
             upper=list(continuous=wrap("cor",size=4,alignPercent=0.8)),
             diag=list(continuous=wrap("densityDiag",alpha=0.5)))+
@@ -161,4 +171,13 @@ for(j in 1:pm$ncol){
 }
 
 ggsave("../Results/Summary_dat/masc_calc_method_comparison_09122018.pdf",pm,height=5,width=7)
+
+#write FM calculations to files
+fwrite(as.data.table(qlmasc.mat2),"../Dataset/FM_ql_different_allometric_corrections/FMql_Method2.txt",sep="\t",col.names=F,row.names=F,quote=F)
+fwrite(as.data.table(qlmasc.mat3),"../Dataset/FM_ql_different_allometric_corrections/FMql_Method3.txt",sep="\t",col.names=F,row.names=F,quote=F)
+fwrite(euroid[,c('IID','Sex','Method 1',"Method 2","Method 3","Method 4")],"../Dataset/FM_ql_different_allometric_corrections/FMoverall_All_Methods.txt",sep="\t",col.names=T,row.names=F,quote=F)
+
+####### test for difference in variance in FM_overal between males and females for each method ########
+
+apply(euroid[,c('Method_1','Method_2','Method_3','Method_4')],2,function(x){leveneTest(x~as.factor(euroid$Sex))})
 
