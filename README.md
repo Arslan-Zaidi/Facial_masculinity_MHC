@@ -18,6 +18,7 @@ Details of folders:
   5. masc_hla_association_03262018.R : Script used to test for association between facial masculinity and MHC heterozygosity
      (Hypothesis 3).
   6. Plot1Face.R: Script used to visualize high-dimensional facial masculinity scores, as well as quasi-landmark based test        statistics (cohen's D, beta coefficients, p-values etc.) as facial heatmaps.
+  7. GeneticAnalysisNotes.pdf: A pdf file that walks through all of the processing of genetic data to calculate heterozygosity for this paper. Included are code blocks, log files, explanatory text, and images. 
      
 ## Dataset
   1. _Euro_demographic_03292018.dat_\
