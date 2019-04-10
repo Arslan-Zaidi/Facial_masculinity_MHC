@@ -5,7 +5,7 @@ library(WebPower)
 library(cowplot)
 
 #read file containing data for sex, height, weight, etc.
-eurofam.het<-fread('Dataset/euro_1233_masc_het_03292018.dat',header=T,sep="\t",stringsAsFactors = F)
+eurofam.het<-fread('../Dataset/euro_1233_masc_het_03292018.dat',header=T,sep="\t",stringsAsFactors = F)
 
 #center and scale data to generate standardized regression coefficients
 # eurofam.het[,c('avg.masc','Age','Height','Weight','phet_genome','phet_hla','gPC1','gPC2','gPC3','gPC4')]<-apply(eurofam.het[,c('avg.masc','Age','Height','Weight','phet_genome','phet_hla','gPC1','gPC2','gPC3','gPC4')],2,scale)
@@ -34,6 +34,7 @@ sim.f2=sim.f2*f2sex
 #sample sizes
 sim.n=seq(20,2000,10)
 
+#create matrix and store power in it for alpha=0.05
 mat1<-matrix(NA,nrow=length(sim.n),ncol=length(sim.f2))
 for(i in 1:length(sim.n)){
   for(j in 1:length(sim.f2)){
@@ -49,6 +50,7 @@ dat1.2<-dat1%>%
   melt(.,id.var="N",value.name="power")%>%
   mutate(f2=round(as.numeric(as.character(variable))/f2sex,3))
 
+#plot power curves for different effect sizes
 plt1<-ggplot(dat1.2,aes(N,power,color=f2,group=f2))+
   geom_line()+
   theme_bw()+
@@ -66,7 +68,7 @@ pwr1<-dat1.2%>%
   group_by(N,f2)%>%
   summarize(power=power*100)
 
-
+#recompute power for alpha=0.05/9=0.006
 mat2<-matrix(NA,nrow=length(sim.n),ncol=length(sim.f2))
 for(i in 1:length(sim.n)){
   for(j in 1:length(sim.f2)){
@@ -82,6 +84,7 @@ dat2.2<-dat2%>%
   melt(.,id.var="N",value.name="power")%>%
   mutate(f2=round(as.numeric(as.character(variable))/f2sex,3))
 
+#plot power curves
 plt2<-ggplot(dat2.2,aes(N,power,color=f2,group=f2))+
   geom_line()+
   theme_bw()+
@@ -99,7 +102,7 @@ pwr2<-dat2.2%>%
   group_by(N,f2)%>%
   summarize(power=power*100)
 
-#combine plots
+#combine both power curves
 plt_all<-plot_grid(plt1+theme(legend.position = "none"),
                    plt2+theme(legend.position = "none"),
                    ncol=2,
@@ -110,35 +113,6 @@ legend<-get_legend(plt1)
 plt_all2<-plot_grid(plt_all,
                     legend,
                     rel_widths = c(1,0.2))
+
+#save plot to file
 ggsave("power_calculations.pdf",plt_all2,height=3,width=7)
-
-
-mat3<-matrix(NA,nrow=length(sim.n),ncol=length(sim.f2))
-for(i in 1:length(sim.n)){
-  for(j in 1:length(sim.f2)){
-    result=wp.regression(n=sim.n[i],p1=9,p2=2,f2=sim.f2[j],alpha=0.05)
-    mat3[i,j]=result$power
-  }
-}
-
-colnames(mat3)=sim.f2
-dat3<-as.data.frame(mat3)
-dat3.2<-dat2%>%
-  mutate(N=sim.n)%>%
-  melt(.,id.var="N",value.name="power")%>%
-  mutate(f2=round(as.numeric(as.character(variable))/f2sex,3))
-
-ggplot(dat3.2,aes(N,power,color=f2,group=f2))+
-  geom_line()+
-  theme_bw()+
-  scale_color_viridis_c()+
-  labs(x="Sample size",
-       y="Power",
-       color="Effect size")+
-  geom_vline(xintercept=1233,color="red",linetype="dashed")+
-  theme(panel.grid = element_blank())
-
-
-
-
-
